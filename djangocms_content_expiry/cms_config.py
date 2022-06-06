@@ -147,15 +147,25 @@ def content_expiry_site_alias_excluded_set(queryset, request):
     )
 
 
+def my_third_party_function_1(request):
+
+    return {
+        "encoding":
+    }
+
+
 class ContentExpiryExtension(CMSAppExtension):
     def __init__(self):
         self.expiry_changelist_queryset_filters = []
+        self.expiry_export_file_configuration = []
 
     def configure_app(self, cms_config):
         versioning_enabled = getattr(cms_config, "djangocms_versioning_enabled", False)
         moderation_enabled = getattr(cms_config, "djangocms_moderation_enabled", False)
         expiry_changelist_queryset_filters = getattr(
             cms_config, "djangocms_content_expiry_changelist_queryset_filters", [])
+        expiry_export_file_configuration = getattr(
+            cms_config, "djangocms_content_expiry_expiry_export_file_configuration", {})
 
         if not versioning_enabled:
             raise ImproperlyConfigured("Versioning needs to be enabled for Content Expiry")
@@ -163,6 +173,7 @@ class ContentExpiryExtension(CMSAppExtension):
         if not moderation_enabled:
             raise ImproperlyConfigured("Moderation needs to be enabled for Content Expiry")
 
+        self.expiry_changelist_queryset_filters.extend(expiry_changelist_queryset_filters)
         self.expiry_changelist_queryset_filters.extend(expiry_changelist_queryset_filters)
 
 

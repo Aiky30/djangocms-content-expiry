@@ -23,6 +23,7 @@ from .filters import (
 from .forms import ContentExpiryForm, DefaultContentExpiryConfigurationForm
 from .helpers import get_rangefilter_expires_default
 from .models import ContentExpiry, DefaultContentExpiryConfiguration
+from .utils import get_file_export_settings
 
 
 @admin.register(ContentExpiry)
@@ -212,10 +213,11 @@ class ContentExpiryAdmin(admin.ModelAdmin):
         Retrieves the queryset and exports to csv format
         """
         queryset = self.get_exported_queryset(request)
+        settings = get_file_export_settings(request)
         meta = self.model._meta
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = 'attachment; filename={}.csv'.format(meta)
-        writer = csv.writer(response)
+        writer = csv.writer(response, **settings)
         # Write the header to the file
         writer.writerow([
             'Title',

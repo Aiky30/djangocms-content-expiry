@@ -49,3 +49,17 @@ def get_versionable_content_types():
             content_type = ContentType.objects.get_for_model(versionable.content_model)
             content_types.append(content_type)
     return content_types
+
+
+def get_file_export_settings(request):
+    """
+    Returns a dictionary of settings for the csv writer:
+        https://docs.python.org/3/library/csv.html#examples
+    """
+    settings = {}
+    app_config = apps.get_app_config("djangocms_versioning")
+    settings = app_config.cms_extension.file_export_settings
+    for _callable in app_config.cms_extension.file_export_settings:
+        result = _callable(request)
+        settings = {**settings, **result}
+    return settings
